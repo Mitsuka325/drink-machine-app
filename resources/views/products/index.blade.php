@@ -84,13 +84,13 @@
                     <!--親要素（row）を5つの等幅のカラムに分割-->
                     <div class="col-5">
                     </div>
-                </div class="col-5">
+                <div class="col-5">
                 <!--php artisan vendor:publish --tag=laravel-paginationコマンド実行を忘れない-->
                 {{ $products->links('vendor.pagination.bootstrap-4') }}
             </div>
-            <div class="col-2">
-            </div>
         </div>
+    </div>
+            <div class="col-2">
     </div>
     </div>
     </div>
