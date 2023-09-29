@@ -12,11 +12,19 @@ class ProductController extends Controller
     // 一覧ページ
     public function index(Request $request)
     {
+        $query = Product::query();
+
+        // メーカー名で絞り込み
         if ($request->company_id) {
-            $products = Product::where('company_id', $request->company_id)->paginate(2);
-        } else {
-            $products = Product::paginate(2);
+            $query->where('company_id', $request->company_id);
         }
+
+        // 商品名で検索
+        if ($request->product_name) {
+            $query->where('product_name', 'like', '%' . $request->product_name . '%');
+        }
+
+        $products = $query->paginate(2);
         return view('products.index', compact('products'));
     }
 

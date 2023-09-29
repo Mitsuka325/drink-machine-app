@@ -12,7 +12,7 @@
                     <div class="row g-3">
                         <!-- col-mdは中サイズの画面で均等に幅が分割する -->
                         <div class="col-md">
-                            <input type="text" class="form-control" id="product_name" placeholder="検索キーワード">
+                            <input type="text" class="form-control" id="product_name" name="product_name" placeholder="検索キーワード">
                         </div>
                         <div class="col-md">
                             <select class="form-select" aria-label="Default select example" id="company_id"
@@ -60,7 +60,7 @@
                                 <td>{{ $product->product_name }}</td>
                                 <td>{{ $product->price }}</td>
                                 <td>{{ $product->stock }}</td>
-                                <td>{{ $product->company_id }}</td>
+                                <td>{{ $product->company->company_name }}</td>
                                 <td>
                                     <a href="{{ route('products.show', $product) }}"class="btn btn-primary">詳細</a>
                                 </td>
