@@ -12,7 +12,8 @@
                     <div class="row g-3">
                         <!-- col-mdは中サイズの画面で均等に幅が分割する -->
                         <div class="col-md">
-                            <input type="text" class="form-control" id="product_name" name="product_name" placeholder="検索キーワード">
+                            <input type="text" class="form-control" id="product_name" name="product_name"
+                                placeholder="検索キーワード">
                         </div>
                         <div class="col-md">
                             <select class="form-select" aria-label="Default select example" id="company_id"
@@ -29,6 +30,17 @@
                         </div>
                     </div>
                 </form>
+                <!--エラーメッセージ表示-->
+                @if ($errors->any())
+                    <div class="alert alert-danger mt-3">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
 
                 <!-- 新規登録ボタン mt-5マージントップ上に余白をつくる-->
                 <table class="table table-bordered table-light table-primary mt-5">
@@ -65,7 +77,8 @@
                                     <a href="{{ route('products.show', $product) }}"class="btn btn-primary">詳細</a>
                                 </td>
                                 <td>
-                                    <a href="{{ route('products.edit', $product) }}"class="btn btn-primary btn-success">編集</a>
+                                    <a
+                                        href="{{ route('products.edit', $product) }}"class="btn btn-primary btn-success">編集</a>
                                 </td>
                                 <td>
                                     <form action="{{ route('products.destroy', $product) }}"method="POST"
@@ -84,14 +97,14 @@
                     <!--親要素（row）を5つの等幅のカラムに分割-->
                     <div class="col-5">
                     </div>
-                <div class="col-5">
-                <!--php artisan vendor:publish --tag=laravel-paginationコマンド実行を忘れない-->
-                {{ $products->links('vendor.pagination.bootstrap-4') }}
+                    <div class="col-5">
+                        <!--php artisan vendor:publish --tag=laravel-paginationコマンド実行を忘れない-->
+                        {{ $products->links('vendor.pagination.bootstrap-4') }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
             </div>
         </div>
-    </div>
-            <div class="col-2">
-    </div>
-    </div>
     </div>
 @endsection

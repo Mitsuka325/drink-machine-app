@@ -40,6 +40,9 @@ class ProductController extends Controller
     // 作成機能
     public function store(Request $request)
     {
+        DB::beginTransaction();//トランザクションを開始
+        try {
+
         $product = new Product();
         $product->product_name = $request->input('product_name');
         $product->company_id = $request->input('company_id');
@@ -56,17 +59,14 @@ class ProductController extends Controller
             $imgPath = $request->file('img_path')->store('images');
             $product->img_path = $imgPath;
         }
-        DB::beginTransaction();
-        try {
-            $product->save();
-            DB::commit();
+            $product->save();//データベースへの保存
+            DB::commit();//トランザクションをコミット
+            return redirect()->route('products.index')->with('flash_message', '商品の登録が完了しました');
+            // リダイレクトフラッシュメッセージの表示 layouts/app.bladeにsessionの設定をする
         } catch (\Throwable $th) {
-            DB::rollBack();
+            DB::rollBack();//エラーがあった場合はロールバック
             return back()->withErrors(['error' => '商品の作成に失敗しました']);
         }
-        // リダイレクトフラッシュメッセージの表示
-        // layouts/app.bladeにsessionの設定をする
-        return redirect()->route('products.index')->with('flash_message', '商品の登録が完了しました');
     }
     // 詳細ページ 
     // compact関数で変数をビューに渡す
@@ -85,6 +85,8 @@ class ProductController extends Controller
     // 更新処理
     public function update(Request $request, Product $product)
     {
+        DB::beginTransaction();
+        try {
         $product->product_name = $request->input('product_name');
         $product->company_id = $request->input('company_id');
         $product->price = $request->input('price');
@@ -96,15 +98,25 @@ class ProductController extends Controller
             $product->img_path = $imgPath;
         }
         $product->save();
-
-        return redirect()->route('products.index')->with('flash_message', '商品の更新が完了しました');
+        DB::commit();
+            return redirect()->route('products.index')->with('flash_message', '商品の更新が完了しました');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->withErrors(['error' => '商品の更新に失敗しました']);
+        }
     }
 
     // 削除機能
     public function destroy(Product $product)
     {
-        $product->delete();
-
-        return redirect()->route('products.index')->with('flash_message', '商品を削除しました。');
+        DB::beginTransaction();
+        try {
+            $product->delete();
+            DB::commit();
+            return redirect()->route('products.index')->with('flash_message', '商品を削除しました');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->withErrors(['error' => '商品の削除に失敗しました']);
+        }
     }
 }

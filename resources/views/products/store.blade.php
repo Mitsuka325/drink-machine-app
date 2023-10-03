@@ -4,6 +4,17 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
+
+                @if ($errors->any())
+                    <div class="alert alert-danger mt-3">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <h2>新規商品登録完了</h2>
 
                 <div class="alert alert-success" role="alert">
