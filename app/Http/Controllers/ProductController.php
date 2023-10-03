@@ -62,6 +62,7 @@ class ProductController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
+            return back()->withErrors(['error' => '商品の作成に失敗しました']);
         }
         // リダイレクトフラッシュメッセージの表示
         // layouts/app.bladeにsessionの設定をする
