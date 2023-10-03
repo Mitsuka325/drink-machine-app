@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class ProductController extends Controller
 {
@@ -53,7 +56,13 @@ class ProductController extends Controller
             $imgPath = $request->file('img_path')->store('images');
             $product->img_path = $imgPath;
         }
-        $product->save();
+        DB::beginTransaction();
+        try {
+            $product->save();
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
         // リダイレクトフラッシュメッセージの表示
         // layouts/app.bladeにsessionの設定をする
         return redirect()->route('products.index')->with('flash_message', '商品の登録が完了しました');
