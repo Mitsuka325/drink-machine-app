@@ -17,9 +17,10 @@ use App\Http\Controllers\ProductController;
 Auth::routes();
 
 // トップページへのアクセス時にログイン画面にリダイレクト
-Route::get('/',function(){
+Route::get('/', function () {
     return redirect()->route('login');
 });
 
 // 各ルート設定
 Route::resource('products', App\Http\Controllers\ProductController::class);
+Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');

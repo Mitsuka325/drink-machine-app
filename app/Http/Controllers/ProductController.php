@@ -15,18 +15,27 @@ class ProductController extends Controller
     //一覧ページ
     public function index(Request $request)
     {
-
-        if ($request->company_id) {
-            $products = Product::companyId($request->company_id)
-                ->productName($request->product_name)
-                ->paginate(2);
-        } elseif ($request->product_name) {
-            $products = product::productName($request->product_name)->paginate(2);
-        } else {
-            $products = product::paginate(2);
+        $sort_column = $request->sort_column ?? 'id';
+        $sort_direct = $request->sort_direct ?? 'asc';
+        $products = Product::search($request)
+            ->orderBy($sort_column, $sort_direct)
+            ->paginate(2)
+            ->appends([
+                'sort_column' => $sort_column,
+                'sort_direct' => $sort_direct,
+                'company_id' => $request->company_id,
+                'product_name' => $request->product_name,
+                'price_range' => $request->price_range,
+                'stock_range' => $request->stock_range
+            ]);
+        if ($request->ajax()) {
+            // Ajaxリクエストの場合、JSONレスポンスを返す
+            return Product::search($request)->orderBy($sort_column, $sort_direct)->get();
         }
+
         return view('products.index', compact('products'));
     }
+
     // 作成ページ
     public function create()
     {
@@ -93,13 +102,16 @@ class ProductController extends Controller
     }
 
     // 削除機能
-    public function destroy(Product $product)
+    public function destroy(Product $product, Request $request)
     {
         DB::beginTransaction();
         try {
             $product->delete();
             DB::commit();
-            return redirect()->route('products.index')->with('flash_message', '商品を削除しました');
+            if ($request->ajax()) {
+                return Product::search($request)->get();
+            } else
+                return redirect()->route('products.index')->with('flash_message', '商品を削除しました');
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->withErrors(['error' => '商品の削除に失敗しました']);
