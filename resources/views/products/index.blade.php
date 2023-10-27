@@ -100,6 +100,22 @@
                             </th>
                         </tr>
                     </thead>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const headers = document.querySelectorAll('th[data-sortable]');
+                            headers.forEach(header => {
+                                header.addEventListener('click', () => {
+                                    const column = header.dataset.sortable;
+                                    const currentDirection = header.dataset.sortDirection || 'asc';
+                                    const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+                                    const url = new URL(window.location);
+                                    url.searchParams.set('sort_column', column);
+                                    url.searchParams.set('sort_direction', newDirection);
+                                    window.location.href = url.toString();
+                                });
+                            });
+                        });
+                    </script>
                     <tbody>
                         @foreach ($products as $product)
                             <tr>
@@ -126,6 +142,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                <script src="{{ asset('js/app.js') }}"></script>
                 <!-- row 横方向のレイアウトをグループ化 -->
                 <div class="row">
                     <!--親要素（row）を5つの等幅のカラムに分割-->
