@@ -18,6 +18,7 @@ class ProductController extends Controller
         $sort_column = $request->sort_column ?? 'id';
         $sort_direct = $request->sort_direct ?? 'asc';
         $products = Product::search($request)
+            ->with('company')
             ->orderBy($sort_column, $sort_direct)
             ->paginate(2)
             ->appends([
@@ -30,7 +31,11 @@ class ProductController extends Controller
             ]);
         if ($request->ajax()) {
             // Ajaxリクエストの場合、JSONレスポンスを返す
-            return Product::search($request)->orderBy($sort_column, $sort_direct)->get();
+            return Product::search($request)
+            ->with('company')
+            ->orderBy($sort_column, $sort_direct)
+            ->get();
+            return $products;
         }
 
         return view('products.index', compact('products'));

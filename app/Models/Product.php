@@ -23,7 +23,7 @@ class Product extends Model
 
     public function company()
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class,'company_id','id');
     }
 
 
@@ -40,6 +40,7 @@ class Product extends Model
     {
         $product_name = $request->product_name;
         $company_id = $request->company_id;
+        $company_name = $request->company_name;
         $price_value = $request->price_range;
         $stock_value = $request->stock_range;
         return
@@ -47,9 +48,13 @@ class Product extends Model
             $query->when($request->product_name ?? false, function ($query, $product_name) {
                 $query->where('product_name', 'like', '%' . $product_name . '%');
             })
-            // メーカー入力時
-            ->when($request->company_id ?? false, function ($query, $company_id) {
+            ->when($company_id, function ($query, $company_id) {
                 $query->where('company_id', $company_id);
+            })
+            ->when($company_name, function ($query, $company_name) {
+                $query->whereHas('company', function ($query) use ($company_name) {
+                    $query->where('company_name', 'like', '%' . $company_name . '%');
+                });
             })
             // 価格入力時
             ->when($request->price_range ?? false, function ($query, $price_value) {
