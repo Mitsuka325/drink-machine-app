@@ -189,7 +189,7 @@
             <td>${product.product_name}</td>
             <td>${product.price}</td>
             <td>${product.stock}</td>
-            <td>${product.company_name}</td>
+            <td>${product.company.company_name}</td>
             <td>
                 <a href="/products/${product.id}" class="btn btn-primary">詳細</a>
             </td>
