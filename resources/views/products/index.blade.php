@@ -210,10 +210,11 @@
             var button = $(this);
             if (confirm('本当に削除しますか？')) {
                 $.ajax({
-                    type: 'DELETE',
+                    type: 'POST',
                     url: '/products/' + productID,
                     data: {
                         '_token': $('meta[name="csrf-token"]').attr('content'),
+                        '_method':'DELETE'
                     },
                     dataType: 'json', // JSON形式のレスポンスを期待
                     success: function(response) {
