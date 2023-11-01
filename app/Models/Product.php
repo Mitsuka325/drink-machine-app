@@ -35,8 +35,9 @@ class Product extends Model
     {
         return $query->where('product_name', 'like', '%' . $product_name . '%');
     }
-
     
+
+
 
     public function scopeSearch($query, $request)
     {
